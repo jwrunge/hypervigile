@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["DOM", "DOM.iterable", "ESNext"],
+    "lib": ["WebWorker", "DOM", "ESNext"],
     "module": "ESNext",
     "target": "ESNext",
     "moduleResolution": "bundler",

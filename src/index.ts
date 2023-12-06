@@ -1,30 +1,32 @@
+import HashWorker from "./hashAny.worker?worker";
+import hashStr from "./hashStr";
+
 type HashFunc = (input: string) => Promise<any>;
 
 const NULL_OR_UNDEFINED = -1;
 const FORCE_CHECK = -2;
 const UNKNOWN_HASH = -3;
 
-async function hashStr(input: string): Promise<number> {
-    console.log(`Hashing string. Length: ${input.length}`)
-    let hash = 0;
-    const enc = new TextEncoder().encode(input);
-    for(let char of enc) {
-      hash = ((hash << 5) - hash) + char;
-      hash &= 0xFFFF; // Convert to usize int
-    }
-    return hash;
-}
-
 export default class ChangeDetector {
     #currentHash: number = -1;
     #currentQuickHash: number = -1;
-
+    #worker = false;
+    
     #stringHashFunc: HashFunc;
     #onValueChanged: Function;
 
-    constructor(onValueChanged: Function, stringHashFunc?: HashFunc) {
+    constructor(
+        onValueChanged: Function, 
+        ops?: {
+            worker?: true,
+            stringHashFunc?: HashFunc
+        }
+    ) {
         this.#onValueChanged = onValueChanged;
-        this.#stringHashFunc = stringHashFunc || hashStr;
+        this.#stringHashFunc = ops?.stringHashFunc || hashStr;
+        if(window.Worker && ops?.worker) {
+            const w = new HashWorker();
+        }
     }
 
     check(input: any) {
@@ -68,8 +70,14 @@ export default class ChangeDetector {
     }
 
     async #hashAny(input: any): Promise<number> {
-        return new Promise(async (resolve) => {
-            resolve(UNKNOWN_HASH);
-        });
+        if(this.#worker) {
+
+        }
+
+        else {
+
+        }
+
+        return new Promise(resolve=> resolve(UNKNOWN_HASH));
     }
 }

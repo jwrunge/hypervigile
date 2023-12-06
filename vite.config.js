@@ -10,4 +10,10 @@ export default defineConfig({
         fileName: "hypervigile"
     }
   },
+  worker: {
+    format: "es"
+  },
+  compilerOptions: {
+    "types": ["vite/client"]
+  }
 });
