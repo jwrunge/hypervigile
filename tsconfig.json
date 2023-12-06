@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["WebWorker", "DOM", "ESNext"],
+    "lib": ["DOM", "ESNext"],
     "module": "ESNext",
     "target": "ESNext",
     "moduleResolution": "bundler",

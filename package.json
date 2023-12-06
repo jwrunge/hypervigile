@@ -3,6 +3,17 @@
   "version": "1.0.0",
   "description": "Fast change detection for any JavaScript type",
   "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.umd.js",
+  "module": "dist/index.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.umd.js"
+    }
+  },
   "scripts": {
     "build": "tsc && vite build",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,6 +21,7 @@
   "author": "Jacob Runge",
   "license": "MIT",
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "typescript": "^5.2.2",
     "vite": "^5.0.0"
   }

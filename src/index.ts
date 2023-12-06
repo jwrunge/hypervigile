@@ -1,7 +1,4 @@
 import HashWorker from "./hashAny.worker?worker";
-import hashStr from "./hashStr";
-
-type HashFunc = (input: string) => Promise<any>;
 
 const NULL_OR_UNDEFINED = -1;
 const FORCE_CHECK = -2;
@@ -11,19 +8,15 @@ export default class ChangeDetector {
     #currentHash: number = -1;
     #currentQuickHash: number = -1;
     #worker = false;
-    
-    #stringHashFunc: HashFunc;
     #onValueChanged: Function;
 
     constructor(
         onValueChanged: Function, 
         ops?: {
             worker?: true,
-            stringHashFunc?: HashFunc
         }
     ) {
         this.#onValueChanged = onValueChanged;
-        this.#stringHashFunc = ops?.stringHashFunc || hashStr;
         if(window.Worker && ops?.worker) {
             const w = new HashWorker();
         }
