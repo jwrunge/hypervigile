@@ -1,5 +1,3 @@
-import HashWorker from "./hashAny.worker?worker"
-
 const NULL_OR_UNDEFINED = -1;
 const FORCE_CHECK = -2;
 const UNKNOWN_HASH = -3;
@@ -7,18 +5,26 @@ const UNKNOWN_HASH = -3;
 export default class ChangeDetector {
     #currentHash: number = -1;
     #currentQuickHash: number = -1;
-    #worker = false;
-    #onValueChanged: Function;
+    #worker?: Worker;
+    #onValueChanged?: (value: any)=> void;
+    #onIgnore?: (value: any)=> void;
+    #onHashing?: ()=> void;
 
     constructor(
-        onValueChanged: Function, 
         ops?: {
-            worker?: true,
+            onValueChanged?: (value: any)=> void,
+            onIgnore?: (value: any)=> void,
+            onHashing?: ()=> void,
+            worker?: Worker
         }
     ) {
-        this.#onValueChanged = onValueChanged;
-        if(globalThis.Worker && ops?.worker) {
-            const w = new HashWorker();
+        this.#onValueChanged = ops?.onValueChanged;
+        this.#onHashing = ops?.onHashing;
+        this.#onIgnore = ops?.onIgnore;
+        this.#worker = ops?.worker;
+        
+        if(globalThis.Worker) {
+            this.#worker?.postMessage("Hello from main thread");
         }
     }
 
@@ -32,14 +38,18 @@ export default class ChangeDetector {
 
         //Check quick hash; if difference, callabck; if same, require full hash
         if(quickHash !== this.#currentQuickHash) {
-            this.#onValueChanged(input);
+            this.#onValueChanged?.(input);
         }
         else if(requireFullHash) {
+            this.#onHashing?.();
             this.#hashAny(input).then(result=> {
                 if(result !== this.#currentHash) {
-                    this.#onValueChanged(input);
+                    this.#onValueChanged?.(input);
                 }
             })
+        }
+        else {
+            this.#onIgnore?.(input);
         }
 
         //Handle hash updates

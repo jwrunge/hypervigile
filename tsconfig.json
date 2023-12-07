@@ -9,6 +9,7 @@
     "strict": true,
     "outDir": "dist",
     "sourceMap": true,
+    "types": ["vite/client"]
   },
-  "files": ["src/index.ts"]
+  "files": ["src/index.withworker.ts", "src/index.noworker.ts"]
 }
