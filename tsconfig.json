@@ -1,15 +1,12 @@
 {
   "compilerOptions": {
-    "lib": ["WebWorker", "ESNext"],
+    "lib": ["WebWorker", "dom", "ES2020"],
+    "skipLibCheck": true,
     "module": "ESNext",
-    "target": "ESNext",
-    "moduleResolution": "bundler",
-    "moduleDetection": "force",
-    "noEmit": false,
-    "strict": true,
-    "outDir": "dist",
-    "sourceMap": true,
-    "types": ["vite/client"]
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "outDir": "dist"
   },
-  "files": ["src/index.withworker.ts", "src/index.noworker.ts"]
+  "files": ["src/index.worker.ts", "src/index.noworker.ts"],
+  "include": ["src"]
 }

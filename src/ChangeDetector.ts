@@ -12,20 +12,18 @@ export default class ChangeDetector {
 
     constructor(
         ops?: {
-            onValueChanged?: (value: any)=> void,
-            onIgnore?: (value: any)=> void,
-            onHashing?: ()=> void,
+            onchange?: (value: any)=> void,
+            onignore?: (value: any)=> void,
+            onhash?: ()=> void,
             worker?: Worker
         }
     ) {
-        this.#onValueChanged = ops?.onValueChanged;
-        this.#onHashing = ops?.onHashing;
-        this.#onIgnore = ops?.onIgnore;
+        this.#onValueChanged = ops?.onchange;
+        this.#onHashing = ops?.onhash;
+        this.#onIgnore = ops?.onignore;
         this.#worker = ops?.worker;
         
-        if(globalThis.Worker) {
-            this.#worker?.postMessage("Hello from main thread");
-        }
+        this.#worker?.postMessage("Hello from main thread");
     }
 
     check(input: any) {

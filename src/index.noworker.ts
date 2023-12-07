@@ -6,8 +6,8 @@ export default function(ops?: {
     onHash?: ()=> void,
 }) {
     return new ChangeDetector({
-        onValueChanged: ops?.onChange,
-        onIgnore: ops?.onIgnore,
-        onHashing: ops?.onHash
+        onchange: ops?.onChange,
+        onignore: ops?.onIgnore,
+        onhash: ops?.onHash,
     });
 }
