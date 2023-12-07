@@ -1,4 +1,4 @@
-import HashWorker from "./hashAny.worker?worker";
+import HashWorker from "./hashAny.worker?worker"
 
 const NULL_OR_UNDEFINED = -1;
 const FORCE_CHECK = -2;
@@ -17,7 +17,7 @@ export default class ChangeDetector {
         }
     ) {
         this.#onValueChanged = onValueChanged;
-        if(window.Worker && ops?.worker) {
+        if(globalThis.Worker && ops?.worker) {
             const w = new HashWorker();
         }
     }

@@ -1,5 +1,5 @@
 {
-  "name": "hypervigile",
+  "name": "fret",
   "version": "1.0.0",
   "description": "Fast change detection for any JavaScript type",
   "type": "module",
