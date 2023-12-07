@@ -27,12 +27,15 @@ export default class ChangeDetector {
     }
 
     check(input: any) {
+        console.log("CHECKING", input)
         let requireFullHash = true;
         let quickHash = this.#quickHash(input);
         if(typeof quickHash !== "number") {
             quickHash = quickHash.quick;
             requireFullHash = false;
         }
+
+        console.log("QUICK HASH", quickHash, requireFullHash)
 
         //Check quick hash; if difference, callabck; if same, require full hash
         if(quickHash !== this.#currentQuickHash) {

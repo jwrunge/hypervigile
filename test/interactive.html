@@ -6,6 +6,12 @@
   <title>My HTML Page</title>
 </head>
 <body>
-  <script src="../dist/fret.js" type="module"></script>
+  <script src="../dist/worker/fret.js"></script>
+  <script>
+    const c1 = fret();
+    console.log(fret)
+    console.log(c1)
+    c1.check(10)
+  </script>
 </body>
 </html>
