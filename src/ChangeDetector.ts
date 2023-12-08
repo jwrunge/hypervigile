@@ -25,9 +25,10 @@ export default class ChangeDetector {
         this.worker = ops?.worker;
     }
 
-    async check(input: any) {
+    async check(input: any): Promise<boolean> {
         let requireFullHash = true;
         let quickHash = this.quickHash(input);
+        let returnValue = false;
 
         if(typeof quickHash !== "number") {
             quickHash = quickHash.quick;
@@ -36,12 +37,14 @@ export default class ChangeDetector {
 
         //Check quick hash; if difference, callabck; if same, require full hash
         if(quickHash !== this.currentQuickHash) {
+            returnValue = true;
             this.onValueChanged?.(input);
         }
         else if(requireFullHash) {
             this.onHashing?.();
             const result = await this.hashAny(input);
             if(result !== this.currentHash) {
+                returnValue = true;
                 this.onValueChanged?.(input);
             }
         }
@@ -52,6 +55,8 @@ export default class ChangeDetector {
         //Handle hash updates
         this.currentQuickHash = quickHash;
         if(!requireFullHash) this.currentHash = quickHash;
+
+        return returnValue;
     }
 
     quickHash(input: any): number | { quick: number, full: false } {

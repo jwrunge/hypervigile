@@ -39,8 +39,14 @@ function assembleIo() {
                     strict: false,
                 },
                 {
-                    file: `dist/${variant}/fret.umd.js`,
-                    format: 'umd',
+                    file: `dist/${variant}/fret.cjs`,
+                    format: 'cjs',
+                    name: "fret",
+                    strict: false,
+                },
+                {
+                    file: `dist/${variant}/fret.mjs`,
+                    format: 'es',
                     name: "fret",
                     strict: false,
                 },

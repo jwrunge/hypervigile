@@ -6,10 +6,22 @@
   "files": [
     "dist"
   ],
+  "main": "dist/worker/fret.js",
   "exports": {
     ".": {
-      "import": "./dist/worker/fret.umd.js",
-      "require": "./dist/worker/fret.umd.js"
+      "browser": "./dist/worker/fret.js",
+      "import": "./dist/worker/fret.mjs",
+      "require": "./dist/worker/fret.cjs"
+    },
+    "./worker": {
+      "browser": "./dist/worker/fret.js",
+      "import": "./dist/worker/fret.mjs",
+      "require": "./dist/worker/fret.cjs"
+    },
+    "./noworker": {
+      "browser": "./dist/noworker/fret.js",
+      "import": "./dist/noworker/fret.mjs",
+      "require": "./dist/noworker/fret.cjs"
     }
   },
   "types": "dist/index.d.ts",
