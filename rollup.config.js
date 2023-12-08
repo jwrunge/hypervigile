@@ -36,11 +36,13 @@ function assembleIo() {
                     file: `dist/${variant}/fret.js`,
                     format: 'iife',
                     name: "fret",
+                    strict: false,
                 },
                 {
                     file: `dist/${variant}/fret.umd.js`,
                     format: 'umd',
-                    name: "fret"
+                    name: "fret",
+                    strict: false,
                 },
             ],
             plugins
