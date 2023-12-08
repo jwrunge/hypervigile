@@ -2,7 +2,7 @@ import ChangeDetector from "./ChangeDetector";
 
 export default function Fret(ops?: {
     onChange?: (value: any)=> void,
-    onIgnore?: ()=> (value: any)=> void,
+    onIgnore?: (value: any)=> void,
     onHash?: ()=> void,
 }) {
     let worker: Worker | undefined;
