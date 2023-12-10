@@ -5,6 +5,5 @@
 import { hashAny } from "./hashAny";
 
 onmessage = e=> {
-    const hash = hashAny(e.data);
-    postMessage(hash);
+    postMessage(hashAny(e.data));
 }

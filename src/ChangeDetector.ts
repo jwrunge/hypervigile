@@ -7,9 +7,9 @@ export default class ChangeDetector {
     currentHash: number = FORCE_CHECK;
     currentQuickHash: number = FORCE_CHECK;
     worker?: Worker;
-    onValueChanged?: (value: any)=> void;
+    changed?: (value: any)=> void;
     onIgnore?: (value: any)=> void;
-    onHashing?: ()=> void;
+    hashing?: ()=> void;
 
     constructor(
         ops?: {
@@ -19,8 +19,8 @@ export default class ChangeDetector {
             worker?: Worker
         }
     ) {
-        this.onValueChanged = ops?.onchange;
-        this.onHashing = ops?.onhash;
+        this.changed = ops?.onchange;
+        this.hashing = ops?.onhash;
         this.onIgnore = ops?.onignore;
         this.worker = ops?.worker;
     }
@@ -40,16 +40,16 @@ export default class ChangeDetector {
             returnValue = true;
             this.currentHash = FORCE_CHECK; //Reset full hash - forces full hash on next check
             this.currentQuickHash = quickHash;
-            this.onValueChanged?.(input);
+            this.changed?.(input);
         }
         else if(requireFullHash) {
-            this.onHashing?.();
-            if(this.currentHash === FORCE_CHECK) this.currentHash = await this.hashAny(current);    //If the hash needs to be checked, hash the current value
-            const result = await this.hashAny(input);
+            this.hashing?.();
+            if(this.currentHash === FORCE_CHECK) this.currentHash = await this.hash(current);    //If the hash needs to be checked, hash the current value
+            const result = await this.hash(input);
             if(result !== this.currentHash) {
                 returnValue = true;
                 this.currentHash = result;
-                this.onValueChanged?.(input);
+                this.changed?.(input);
             }
         }
         else {
@@ -62,10 +62,7 @@ export default class ChangeDetector {
     quickHash(input: any): number | { quick: number, full: false } {
         //Handle numeric inputs
         if(input === null || input === undefined) return {quick: NULL_OR_UNDEFINED, full: false};
-        if(input === true || input === false) {
-            const res = input ? 1 : 0;
-            return {quick: res, full: false};
-        }
+        if(input === true || input === false) return {quick: input ? 1 : 0, full: false};
         if(!isNaN(input)) return {quick: input, full: input};
 
         //Handle complex inputs
@@ -74,15 +71,10 @@ export default class ChangeDetector {
         return FORCE_CHECK;
     }
 
-    async hashAny(input: any): Promise<number> {
-        return new Promise((resolve)=> {
-            if(this.worker) {
-                this.worker.onmessage = e=> {
-                    resolve(e.data)
-                }
-                this.worker.postMessage(input);
-            }
-            else resolve(hashAny(input));
-        });
+    async hash(input: any): Promise<number> {
+        if(this.worker) {
+
+        }
+        return hashAny(input);
     }
 }
