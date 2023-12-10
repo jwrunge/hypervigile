@@ -4,8 +4,8 @@ const NULL_OR_UNDEFINED = -1;
 const FORCE_CHECK = -2;
 
 export default class ChangeDetector {
-    currentHash: number = -1;
-    currentQuickHash: number = -1;
+    currentHash: number = FORCE_CHECK;
+    currentQuickHash: number = FORCE_CHECK;
     worker?: Worker;
     onValueChanged?: (value: any)=> void;
     onIgnore?: (value: any)=> void;
@@ -25,7 +25,7 @@ export default class ChangeDetector {
         this.worker = ops?.worker;
     }
 
-    async check(input: any): Promise<boolean> {
+    async check(input: any, current: any): Promise<boolean> {
         let requireFullHash = true;
         let quickHash = this.quickHash(input);
         let returnValue = false;
@@ -35,26 +35,26 @@ export default class ChangeDetector {
             requireFullHash = false;
         }
 
-        //Check quick hash; if difference, callabck; if same, require full hash
+        //Check quick hash; if difference, callback; if same, require full hash
         if(quickHash !== this.currentQuickHash) {
             returnValue = true;
+            this.currentHash = FORCE_CHECK; //Reset full hash - forces full hash on next check
+            this.currentQuickHash = quickHash;
             this.onValueChanged?.(input);
         }
         else if(requireFullHash) {
             this.onHashing?.();
+            if(this.currentHash === FORCE_CHECK) this.currentHash = await this.hashAny(current);    //If the hash needs to be checked, hash the current value
             const result = await this.hashAny(input);
             if(result !== this.currentHash) {
                 returnValue = true;
+                this.currentHash = result;
                 this.onValueChanged?.(input);
             }
         }
         else {
             this.onIgnore?.(input);
         }
-
-        //Handle hash updates
-        this.currentQuickHash = quickHash;
-        if(!requireFullHash) this.currentHash = quickHash;
 
         return returnValue;
     }
@@ -74,7 +74,7 @@ export default class ChangeDetector {
         return FORCE_CHECK;
     }
 
-    async hashAny(input: any) {
+    async hashAny(input: any): Promise<number> {
         return new Promise((resolve)=> {
             if(this.worker) {
                 this.worker.onmessage = e=> {
