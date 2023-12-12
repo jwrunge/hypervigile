@@ -3,7 +3,4 @@
 */
 
 import { hashAny } from "./hashAny";
-
-onmessage = e=> {
-    e.ports[0].postMessage(hashAny(e.data));
-}
+onmessage = e=> e.ports[0].postMessage(hashAny(e.data));
