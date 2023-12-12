@@ -13,6 +13,8 @@ export default class ChangeDetector {
     async check(input: any, current: any): Promise<boolean> {
         const [quickHash, requireFullHash] = this.#quickHash(input);
 
+        console.log("QUICK", quickHash, "CURRENT", this.#currentQuickHash)
+
         //Check quick hash; if difference, callback; if same, require full hash
         const quickOnly = this.#currentQuickHash !== quickHash;
         this.#currentQuickHash = quickHash;
@@ -20,7 +22,7 @@ export default class ChangeDetector {
         if(quickOnly) return true;
 
         //Only require full hash if the quick hash is the same
-        if(requireFullHash) {
+        else if(requireFullHash) {
             console.log("Running full hash")
             if(this.#currentHash === undefined) {
                 this.#currentHash = await this.#hash(current);    //If the hash needs to be checked, hash the current value
