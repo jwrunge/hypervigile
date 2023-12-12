@@ -16,6 +16,7 @@ export default class ChangeDetector {
             onchange?: (value: any)=> void,
             onignore?: (value: any)=> void,
             onhash?: ()=> void,
+            timeout?: number,
             worker?: Worker
         }
     ) {
@@ -73,7 +74,15 @@ export default class ChangeDetector {
 
     async hash(input: any): Promise<number> {
         if(this.worker) {
+            return new Promise((resolve)=> {
+                const channel = new MessageChannel();
 
+                channel.port1.onmessage = ({data})=> {
+                    resolve(data);
+                }
+
+                this.worker?.postMessage(input, [channel.port2]);
+            })
         }
         return hashAny(input);
     }

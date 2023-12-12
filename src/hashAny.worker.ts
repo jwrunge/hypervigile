@@ -5,5 +5,5 @@
 import { hashAny } from "./hashAny";
 
 onmessage = e=> {
-    postMessage(hashAny(e.data));
+    e.ports[0].postMessage(hashAny(e.data));
 }
