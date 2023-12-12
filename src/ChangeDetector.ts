@@ -14,7 +14,6 @@ export default class ChangeDetector {
         const [quickHash, requireFullHash] = this.#quickHash(input);
 
         //Check quick hash; if difference, callback; if same, require full hash
-        console.log("Quick hash", this.#currentQuickHash, quickHash, requireFullHash, quickHash !== this.#currentQuickHash)
         const quickOnly = this.#currentQuickHash !== quickHash;
         this.#currentQuickHash = quickHash;
 
@@ -28,6 +27,7 @@ export default class ChangeDetector {
             }
             const result = await this.#hash(input);
             if(result !== this.#currentHash) {
+                console.log("UPdating from new hash")
                 this.#currentHash = result;
                 return true;
             }
@@ -38,8 +38,6 @@ export default class ChangeDetector {
     }
 
     #quickHash(input: any): [number | undefined, boolean] {
-        console.log("Quick hashing", typeof input === "number" || typeof input === "string" ? input : "")
-
         //Handle numeric inputs
         let returnValue: number | undefined;
 
@@ -50,9 +48,13 @@ export default class ChangeDetector {
         if(returnValue !== undefined) return [returnValue, false];
 
         //Handle complex inputs
-        if(typeof input === "string" || Array.isArray(input)) returnValue = input.length;
-        if(input instanceof Map || input instanceof Set) returnValue = input.size;
-        returnValue = undefined;
+        if(input.hasOwnProperty("length")) returnValue = input.length;
+        else if(input.hasOwnProperty("size")) returnValue = input.size;
+        else {
+            try { returnValue = JSON.stringify(input).length; }
+            catch(_) { true; }
+        }
+
         return [returnValue, true];
     }
 
