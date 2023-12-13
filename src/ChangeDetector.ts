@@ -11,7 +11,7 @@ export default class ChangeDetector {
     }
 
     async check(input: any, current: any): Promise<boolean> {
-        const [quickHash, requireFullHash] = this.#quickHash(input);
+        const [quickHash, requireFullHash] = this.#quickHash(input) || [];
 
         console.log("QUICK", quickHash, "CURRENT", this.#currentQuickHash)
 
@@ -39,7 +39,7 @@ export default class ChangeDetector {
         return false;
     }
 
-    #quickHash(input: any): [number | undefined, boolean] {
+    #quickHash(input: any): [number | undefined, boolean] | undefined {
         //Handle numeric inputs
         let returnValue: number | undefined;
 
@@ -52,10 +52,7 @@ export default class ChangeDetector {
         //Handle complex inputs
         if(input.hasOwnProperty("length")) returnValue = input.length;
         else if(input.hasOwnProperty("size")) returnValue = input.size;
-        else {
-            try { returnValue = JSON.stringify(input).length; }
-            catch(_) { true; }
-        }
+        else returnValue = Object.keys(input).length;
 
         return [returnValue, true];
     }
